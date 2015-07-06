@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CncEngine.Common", "CncEngine.Common\CncEngine.Common.csproj", "{BF898DE2-083F-47FD-B180-11F33B314D64}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{18B596F2-AFA0-462A-97F1-91FA6864CB86}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CncEngine.Example", "CncEngine.Example\CncEngine.Example.csproj", "{124921F8-CC51-4205-8D0E-C38B17FBDA40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CncEngine.Server", "CncEngine.Server\CncEngine.Server.csproj", "{D9379691-B1CD-4A0A-964B-12B6546BC006}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CA8718C3-DA45-472E-863D-9B5E778528B6}"
+	ProjectSection(SolutionItems) = preProject
+		Licence.txt = Licence.txt
+		README.txt = README.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BF898DE2-083F-47FD-B180-11F33B314D64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF898DE2-083F-47FD-B180-11F33B314D64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF898DE2-083F-47FD-B180-11F33B314D64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF898DE2-083F-47FD-B180-11F33B314D64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{124921F8-CC51-4205-8D0E-C38B17FBDA40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{124921F8-CC51-4205-8D0E-C38B17FBDA40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{124921F8-CC51-4205-8D0E-C38B17FBDA40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{124921F8-CC51-4205-8D0E-C38B17FBDA40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9379691-B1CD-4A0A-964B-12B6546BC006}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9379691-B1CD-4A0A-964B-12B6546BC006}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9379691-B1CD-4A0A-964B-12B6546BC006}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9379691-B1CD-4A0A-964B-12B6546BC006}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
