@@ -11,5 +11,7 @@ namespace CncEngine.Common
         void Configure(ModuleConfiguration contextModuleConfiguration);
 
         void Process(Message message);
+
+        void ExceptionHandling(Exception ex, Message message);
     }
 }

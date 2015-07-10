@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using log4net;
 
 namespace CncEngine.Common.Http
 {
@@ -6,12 +7,14 @@ namespace CncEngine.Common.Http
     {
         public bool Equals(HttpRoute x, HttpRoute y)
         {
-            return x.Host == y.Host && x.Port == y.Port && x.Path == y.Path;
+            var result =  (x.Host == "+" || y.Host == "+" || x.Host == y.Host) && x.Port == y.Port && x.Path == y.Path;
+            return result;
         }
 
         public int GetHashCode(HttpRoute obj)
         {
-            return obj.Host.GetHashCode() ^ obj.Port.GetHashCode() ^ obj.Path.GetHashCode();
+            var result = obj.Host.GetHashCode() ^ obj.Port.GetHashCode() ^ obj.Path.GetHashCode();
+            return result;
         }
     }
 }

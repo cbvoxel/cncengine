@@ -44,12 +44,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ctrl\ConditionMessageProcessor.cs" />
+    <Compile Include="Ctrl\ElseExecutor.cs" />
+    <Compile Include="Ctrl\ElseIfExecutor.cs" />
+    <Compile Include="Ctrl\IfExecutor.cs" />
+    <Compile Include="Ctrl\ThenExecutor.cs" />
+    <Compile Include="Db\DbMsSqlExtensions.cs" />
+    <Compile Include="Db\DbMySqlExtensions.cs" />
     <Compile Include="Exceptions\AlreadyConfiguredException.cs" />
+    <Compile Include="Exceptions\ModuleConfigurationException.cs" />
+    <Compile Include="File\FileExtensions.cs" />
     <Compile Include="Http\HttpConnectorExtensions.cs" />
     <Compile Include="Http\HttpConnectorConfiguration.cs" />
     <Compile Include="Http\HttpListenerConfiguration.cs" />
     <Compile Include="Http\HttpListenerExtensions.cs" />
     <Compile Include="IModule.cs" />
+    <Compile Include="Log\LogExtensions.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageExtensions.cs" />
     <Compile Include="ModuleConfiguration.cs" />
@@ -57,13 +67,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Http\HttpRoute.cs" />
     <Compile Include="Http\HttpRouteEqualityComparer.cs" />
+    <Compile Include="Resources.cs" />
+    <Compile Include="Xml\XmlExtensions.cs" />
+    <Compile Include="Xml\XsltExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Db\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Licence.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

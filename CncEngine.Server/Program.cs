@@ -10,7 +10,7 @@ namespace CncEngine.Server
         static void Main(string[] args)
         {
             log4net.Config.XmlConfigurator.Configure();
-            Logger.Debug("Test");
+            Logger.Info("Engine Startup");
             var engine = new Engine();
             engine.Run();
         }

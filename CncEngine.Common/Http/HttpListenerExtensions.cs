@@ -4,13 +4,18 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using log4net;
 
 namespace CncEngine.Common.Http
 {
     public static class HttpListenerExtensions
     {
+        private static ILog Logger = LogManager.GetLogger(typeof(HttpListenerExtensions));
+
         public static ModuleConfiguration HttpListener(this ModuleConfiguration moduleConfig, HttpListenerConfiguration config, string path)
         {
+            Logger.DebugFormat("Step");
+
             moduleConfig.ConfigureRoute(config.Host, config.BasePath + path, config.Port);
 
             return moduleConfig;
@@ -18,6 +23,8 @@ namespace CncEngine.Common.Http
 
         public static Message GetMessage(this HttpListenerRequest request)
         {
+            Logger.DebugFormat("Step");
+
             var message = new Message();
             var bytes = new byte[request.InputStream.Length];
             var task = request.InputStream.ReadAsync(bytes, 0, bytes.Length);
@@ -33,19 +40,25 @@ namespace CncEngine.Common.Http
 
         public static void CreateResponse(this Message message, HttpListenerResponse response)
         {
-            var encoding = (Encoding)message.Variables["ContentEncoding"];
+            Logger.DebugFormat("Step");
 
-            var bytes = message.Payload.ToBytes();
-            bytes = Encoding.Convert(Encoding.UTF8, encoding, bytes);
-            var task = response.OutputStream.WriteAsync(bytes, 0, bytes.Length);
-
+            object value;
+            
+            message.Variables.TryGetValue("ContentEncoding", out value);
+            var encoding = (Encoding) value ?? Encoding.UTF8;
             response.ContentEncoding = encoding;
-            response.ContentType = (String)message.Variables["ContentType"];
-            response.Headers = (WebHeaderCollection)message.Variables["Headers"];
+
+            message.Variables.TryGetValue("ContentType", out value);
+            response.ContentType = (string) value ?? "text/plain";
+
+            message.Variables.TryGetValue("Headers", out value);
+            response.Headers = (WebHeaderCollection) value ?? new WebHeaderCollection();
 
             response.StatusCode = 200;
 
-            task.Wait();
+            var bytes = message.Payload.ToBytes();
+            bytes = Encoding.Convert(Encoding.UTF8, encoding, bytes);
+            response.OutputStream.Write(bytes, 0, bytes.Length);
         }
     }
 }

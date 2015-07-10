@@ -9,9 +9,9 @@ using CncEngine.Example.GetToken;
 using CncEngine.Example.ItemAttributes;
 using log4net;
 
-namespace CncEngine.Example
+namespace CncEngine.Example.ItemAttributes
 {
-    public class Module : IModule
+    public class GetItemAttributesModule : IModule
     {
         public static string Username { get; set; }
         public static string Password { get; set; }
@@ -19,7 +19,7 @@ namespace CncEngine.Example
         public static int Port { get; set; }
         public static string Path { get; set; }
 
-        static Module()
+        static GetItemAttributesModule()
         {
             try
             {
@@ -51,14 +51,12 @@ namespace CncEngine.Example
                 BasePath = "/",
                 Port = 8081
             };
-            context.HttpListener(httpListenerConfig, "test/");
+            context.HttpListener(httpListenerConfig, "GetItemAttributes/");
         }
 
         public void Process(Message message)
         {
-            message
-                .SetVariable("ContentType", "text/xml")
-                .SetPayload("<Root>Test</Root>");
+            message.GetItemAttributes(_plentyConnector);
         }
 
         public void ExceptionHandling(Exception ex, Message message)
