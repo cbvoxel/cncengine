@@ -52,8 +52,11 @@
     <Compile Include="Ctrl\ElseIfExecutor.cs" />
     <Compile Include="Ctrl\IfExecutor.cs" />
     <Compile Include="Ctrl\ThenExecutor.cs" />
-    <Compile Include="Db\DbMsSqlExtensions.cs" />
-    <Compile Include="Db\DbMySqlExtensions.cs" />
+    <Compile Include="Db\DbCommonExtenstions.cs" />
+    <Compile Include="Db\MsSql\DbMsSqlExtensions.cs" />
+    <Compile Include="Db\MySql\DbMySqlExtensions.cs" />
+    <Compile Include="Db\MsSql\MsSqlConnectionConfig.cs" />
+    <Compile Include="Db\MySql\MySqlConnectionConfig.cs" />
     <Compile Include="Exceptions\AlreadyConfiguredException.cs" />
     <Compile Include="Exceptions\ModuleConfigurationException.cs" />
     <Compile Include="File\FileExtensions.cs" />

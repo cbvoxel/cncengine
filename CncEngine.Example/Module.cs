@@ -18,13 +18,10 @@
 using System;
 using System.Linq;
 using CncEngine.Common;
+using CncEngine.Common.Db;
+using CncEngine.Common.Db.MsSql;
 using CncEngine.Common.Exceptions;
 using CncEngine.Common.Http;
-using CncEngine.Common.Log;
-using CncEngine.Common.Xml;
-using CncEngine.Example.GetToken;
-using CncEngine.Example.ItemAttributes;
-using log4net;
 
 namespace CncEngine.Example
 {
@@ -75,7 +72,15 @@ namespace CncEngine.Example
         {
             message
                 .SetVariable("ContentType", "text/xml")
-                .SetPayload("<Root>Test</Root>");
+                .LoadModuleResourceTextFile<Module>("PlentyConfig.xml")
+                .ExtractHost("//LeoveServer1/Host")
+                .ExtractPort("//LeoveServer1/Port")
+                .ExtractUsername("//LeoveServer1/Username")
+                .ExtractPassword("//LeoveServer1/Password")
+                .ExtractDatabase("//LeoveServer1/Database")
+                .MsSqlSelect("SELECT TOP(10) * FROM TranslationTable [TT]; SELECT TOP(10) * FROM ActionReports [AR];")
+                //.SetPayload("<Root>Test</Root>")
+                ;
         }
 
         public void ExceptionHandling(Exception ex, Message message)

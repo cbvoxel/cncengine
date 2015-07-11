@@ -27,7 +27,7 @@ namespace CncEngine.Common.Xml
 {
     public static class XsltExtensions
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(Message));
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(XsltExtensions));
 
         public static Message XslTransform(this Message message, Stream xslt)
         {

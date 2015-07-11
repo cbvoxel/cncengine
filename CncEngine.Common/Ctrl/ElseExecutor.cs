@@ -1,4 +1,4 @@
-﻿/**
+/**
     Copyright (C) 2015  Carsten Blank
 
     This program is free software: you can redistribute it and/or modify
@@ -15,9 +15,25 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace CncEngine.Common.Db
+using log4net;
+
+namespace CncEngine.Common.Ctrl
 {
-    public static class DbMySqlExtensions
+    public class ElseExecutor
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(MessageExtensions));
+
+        private readonly IfExecutor _ifExecutor;
+
+        public ElseExecutor(IfExecutor ifExecutor)
+        {
+            _ifExecutor = ifExecutor;
+        }
+
+        public Message EndIf()
+        {
+            Logger.Debug("Step");
+            return _ifExecutor.Execute();
+        }
     }
 }
