@@ -15,19 +15,34 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using log4net;
 
-namespace CncEngine.Common.Ctrl
+namespace CncEngine.Common.Ctrl.IfThenElse
 {
-    public class ElseExecutor
+    public class ThenExecutor
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(MessageExtensions));
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(ThenExecutor));
 
         private readonly IfExecutor _ifExecutor;
 
-        public ElseExecutor(IfExecutor ifExecutor)
+        internal ThenExecutor(IfExecutor ifExecutor)
         {
             _ifExecutor = ifExecutor;
+        }
+
+        public ElseIfExecutor ElseIf(Func<Message, bool> func)
+        {
+            Logger.Debug("Step");
+            _ifExecutor.ConditionMessageProcessorList.Add(new ConditionMessageProcessor(func));
+            return new ElseIfExecutor(_ifExecutor);
+        }
+
+        public ElseExecutor Else(Func<Message, Message> elsePart)
+        {
+            Logger.Debug("Step");
+            _ifExecutor.ElseBranchFunc = elsePart;
+            return new ElseExecutor(_ifExecutor);
         }
 
         public Message EndIf()

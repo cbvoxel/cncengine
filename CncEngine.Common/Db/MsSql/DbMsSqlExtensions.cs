@@ -20,6 +20,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Xml.Linq;
 using CncEngine.Common.Xml;
+using CncEngine.Common.Xml.Xslt;
 using log4net;
 
 namespace CncEngine.Common.Db.MsSql
@@ -34,7 +35,7 @@ namespace CncEngine.Common.Db.MsSql
 
             var adapter = new SqlDataAdapter(selectStatement, config.ToConnectionString());
             var dataSet = new DataSet();
-            adapter.Fill(dataSet);
+            adapter.Fill(dataSet, "ResultTable");
             var result = new XDocument(new XElement("MsSqlSelectResult"));
             foreach (DataTable table in dataSet.Tables)
             {
@@ -72,6 +73,11 @@ namespace CncEngine.Common.Db.MsSql
                 Database = message.Variables["Db.Database"].ToString()
             };
             return message.MsSqlSelect(config, selectStatement);
+        }
+
+        public static Message MsSqlSelect(this Message message, Func<Message,string> selectStatementFunc)
+        {
+            return message.MsSqlSelect(selectStatementFunc(message));
         }
     }
 }

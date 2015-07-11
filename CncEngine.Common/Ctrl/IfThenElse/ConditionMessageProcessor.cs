@@ -17,7 +17,7 @@
 
 using System;
 
-namespace CncEngine.Common.Ctrl
+namespace CncEngine.Common.Ctrl.IfThenElse
 {
     internal class ConditionMessageProcessor
     {

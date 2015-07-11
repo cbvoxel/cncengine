@@ -16,45 +16,30 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using System.Xml.XPath;
-using CncEngine.Common.Ctrl;
+using CncEngine.Common.Ctrl.ForEach;
+using CncEngine.Common.Ctrl.IfThenElse;
+using CncEngine.Common.Xml;
 using log4net;
 
 namespace CncEngine.Common
 {
     public static class MessageExtensions
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof (MessageExtensions));
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(MessageExtensions));
 
-        public static Message ExtractVariable(this Message msg, string xPath, string variableName)
+        public static Message ExtractVariable(this Message msg, string xPath, string variableName, XmlExtensions.NodeType nodeType = XmlExtensions.NodeType.Value)
         {
             Logger.Debug("Step");
-            var doc = msg.Payload.ToXDocument();
-            if(doc == null)
-                throw new InvalidOperationException("Not an xml document.");
-            if (doc.Root == null)
-                throw new InvalidOperationException("No root in xml document.");
-            var value = doc.Root.XPathSelectElements(xPath).Select(x => x.Value).FirstOrDefault();
-            msg.Variables[variableName] = value;
+            var value = msg.Payload.ToString();
+            msg.Variables[variableName] = value.ExtractXPath(xPath, nodeType);
             return msg;
         }
 
-        public static IEnumerable<Message> SplitMessages(this Message msg, string xPath)
+        public static MessageCollection SplitMessages(this Message msg, string xPath)
         {
-            var doc = msg.Payload.ToXDocument();
-            if (doc == null)
-                throw new InvalidOperationException("Not an xml document.");
-            if (doc.Root == null)
-                throw new InvalidOperationException("No root in xml document.");
-            return doc.Root.Descendants(xPath).Select(n => new Message()
-            {
-                Variables = msg.Variables,
-                Payload = new Payload() { PayloadAsString = n.ToString() }
-            });
-
+            return new MessageCollection(msg, xPath);
         }
 
         public static IfExecutor If(this Message message, Func<Message, Boolean> expressionEvaluator)
@@ -65,19 +50,22 @@ namespace CncEngine.Common
 
         public static Message Combine(this Message message, Func<Message, Message> otherMessage)
         {
-            var oMessage = otherMessage(new Message());
+            var oMessage = otherMessage(message.Clone());
+            return message.Combine(oMessage);
+        }
 
-            if (message.Payload.ToXDocument().Root.Name == "MessageCollection")
+        public static Message Combine(this Message message, Message oMessage)
+        {
+            Logger.Debug("Step");
+
+            var payloadCollectionRoot = message.Payload.Element("PayloadCollection");
+            if(payloadCollectionRoot == null)
             {
-                message.Payload.ToXDocument().Root.Add(oMessage.Payload.ToString());
+                payloadCollectionRoot = new XElement("PayloadCollection", message.Payload);
+                message.SetPayload(payloadCollectionRoot);
             }
-            else
-            {
-                var thisPayload = message.Payload.ToXDocument().Root;
-                var otherPayload = oMessage.Payload.ToXDocument().Root;
-                var doc = new XDocument(new XElement("MessageCollection", thisPayload, otherPayload));
-                message.SetPayload(doc.ToString());
-            }
+
+            payloadCollectionRoot.Add(oMessage.Payload);
 
             return message;
         }
@@ -90,6 +78,12 @@ namespace CncEngine.Common
         public static Message LoadModuleResourceXml<T>(this Message message, string relativePath) where T : IModule
         {
             return message.SetPayload(Resources.LoadModuleResourceXml<T>(relativePath).ToString());
+        }
+
+        public static Message VariableToPayload(this Message message, string variableName)
+        {
+            message.Payload.Add(new XElement(variableName, message.Variables[variableName].ToString()));
+            return message;
         }
     }
 }

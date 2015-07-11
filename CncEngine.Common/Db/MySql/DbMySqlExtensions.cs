@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Data;
 using System.Xml.Linq;
 using MySql.Data.MySqlClient;
@@ -27,7 +28,7 @@ namespace CncEngine.Common.Db.MySql
         {
             var adapter = new MySqlDataAdapter(selectStatement, config.ToConnectionString());
             var dataSet = new DataSet();
-            adapter.Fill(dataSet);
+            adapter.Fill(dataSet, "ResultTable");
             var result = new XDocument(new XElement("MySqlSelectResult"));
             foreach (DataTable table in dataSet.Tables)
             {
@@ -43,6 +44,26 @@ namespace CncEngine.Common.Db.MySql
             }
             message.SetPayload(result.ToString());
             return message;
+        }
+
+        public static Message MySqlSelect(this Message message, string selectStatement)
+        {
+            if (!message.Variables.ContainsKey("Db.Host") ||
+                !message.Variables.ContainsKey("Db.Port") ||
+                !message.Variables.ContainsKey("Db.Username") ||
+                !message.Variables.ContainsKey("Db.Password") ||
+                !message.Variables.ContainsKey("Db.Database"))
+                throw new InvalidOperationException("Configuration incorrect");
+
+            var config = new MySqlConnectionConfig
+            {
+                Host = message.Variables["Db.Host"].ToString(),
+                Port = int.Parse(message.Variables["Db.Port"].ToString()),
+                Username = message.Variables["Db.Username"].ToString(),
+                Password = message.Variables["Db.Password"].ToString(),
+                Database = message.Variables["Db.Database"].ToString()
+            };
+            return message.MySqlSelect(config, selectStatement);
         }
     }
 }

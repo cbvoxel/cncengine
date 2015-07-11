@@ -58,14 +58,14 @@ namespace CncEngine.Common
             System.IO.File.WriteAllText(moduleDirectory.FullName + "/" + relativePath, text, Encoding.UTF8);
         }
 
-        public static XDocument LoadModuleResourceXml<T>(string relativePath) where T : IModule
+        public static XElement LoadModuleResourceXml<T>(string relativePath) where T : IModule
         {
             var moduleLocation = typeof(T).Assembly.Location;
             var moduleFileInfo = new FileInfo(moduleLocation);
             var moduleDirectory = moduleFileInfo.Directory;
             using (var stream = System.IO.File.OpenRead(moduleDirectory.FullName + "/" + relativePath))
             {
-                var doc = XDocument.Load(stream);
+                var doc = XElement.Load(stream);
                 return doc;
             }
         }

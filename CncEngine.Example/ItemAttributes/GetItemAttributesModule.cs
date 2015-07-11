@@ -20,11 +20,6 @@ using System.Linq;
 using CncEngine.Common;
 using CncEngine.Common.Exceptions;
 using CncEngine.Common.Http;
-using CncEngine.Common.Log;
-using CncEngine.Common.Xml;
-using CncEngine.Example.GetToken;
-using CncEngine.Example.ItemAttributes;
-using log4net;
 
 namespace CncEngine.Example.ItemAttributes
 {
@@ -41,11 +36,11 @@ namespace CncEngine.Example.ItemAttributes
             try
             {
                 var xml = Resources.LoadModuleResourceXml<Module>(@"PlentyConfig.xml");
-                Username = xml.Root.Descendants("Username").First().Value;
-                Password = xml.Root.Descendants("Password").First().Value;
-                Host = xml.Root.Descendants("Host").First().Value;
-                Port = Int32.Parse(xml.Root.Descendants("Port").First().Value);
-                Path = xml.Root.Descendants("Path").First().Value;
+                Username = xml.Descendants("Username").First().Value;
+                Password = xml.Descendants("Password").First().Value;
+                Host = xml.Descendants("Host").First().Value;
+                Port = Int32.Parse(xml.Descendants("Port").First().Value);
+                Path = xml.Descendants("Path").First().Value;
             }
             catch (Exception e)
             {

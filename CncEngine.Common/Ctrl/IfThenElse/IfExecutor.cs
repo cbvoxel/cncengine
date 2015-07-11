@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using log4net;
 
-namespace CncEngine.Common.Ctrl
+namespace CncEngine.Common.Ctrl.IfThenElse
 {
     public class IfExecutor
     {

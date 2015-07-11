@@ -17,7 +17,8 @@
 
 using CncEngine.Common;
 using CncEngine.Common.Http;
-using CncEngine.Common.Xml;
+using CncEngine.Common.Log;
+using CncEngine.Common.Xml.Xslt;
 using CncEngine.Example.GetToken;
 
 namespace CncEngine.Example.ItemAttributes
@@ -28,11 +29,12 @@ namespace CncEngine.Example.ItemAttributes
         {
             return message
                 .LoadToken(plentyConfig)
-                .SetPayload(m => string.Format("<Token>{0}</Token>", m.Variables["Token"]))
-                .Combine(m => m.LoadModuleResourceTextFile<Module>(@"PlentyConfig.xml"))
-                .XslTransformFromModuleResource<Module>("ItemAttributes/Login2GetItemAttributes.xsl")
+                .LoadModuleResourceXml<Module>(@"PlentyConfig.xml")
+                .VariableToPayload("Token")
+                .XslTransformFromModuleResource<GetItemAttributesModule>("ItemAttributes/Login2GetItemAttributes.xsl")
                 .SetVariable("HttpHeadersSoapAction", "GetItemAttributes")
-                .HttpPostMessage(plentyConfig, "");
+                .HttpPostMessage(plentyConfig, "")
+                ;
         }
     }
 }

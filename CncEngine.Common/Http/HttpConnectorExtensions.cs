@@ -45,7 +45,7 @@ namespace CncEngine.Common.Http
 
             try
             {
-                message.SetPayload(client.UploadString(url, message.Payload.ToString()));
+                message.SetPayload(client.UploadString(url, message.Payload.FirstNode.ToString()));
                 message.Variables["ContentType"] = contentType;
             }
             catch (WebException ex)

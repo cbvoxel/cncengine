@@ -15,35 +15,20 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
-using CncEngine.Common.Xml;
 using log4net;
 
 namespace CncEngine.Common
 {
-    public class Payload
+    public class Payload : XElement
     {
         protected static ILog Logger = LogManager.GetLogger(typeof(Message));
 
-        internal string PayloadAsString;
+        public Payload() : base("Payload") { }
 
-        public Payload()
-        {
-            PayloadAsString = "";
-        }
-
-        public override string ToString()
-        {
-            return ToXDocument().ToString();
-        }
+        public Payload(XElement element) : base(new XElement("Payload", element)) { }
 
         public Stream ToStream()
         {
@@ -51,14 +36,14 @@ namespace CncEngine.Common
             return new MemoryStream(bytes);
         }
 
-        public XDocument ToXDocument()
-        {
-            return XDocument.Load(ToStream());
-        }
-
         public byte[] ToBytes()
         {
-            return Encoding.UTF8.GetBytes(PayloadAsString);
+            return Encoding.UTF8.GetBytes(ToString());
+        }
+
+        public Payload Clone()
+        {
+            return new Payload(Parse(ToString()));
         }
     }
 }

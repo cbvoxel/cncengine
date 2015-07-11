@@ -47,11 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ctrl\ConditionMessageProcessor.cs" />
-    <Compile Include="Ctrl\ElseExecutor.cs" />
-    <Compile Include="Ctrl\ElseIfExecutor.cs" />
-    <Compile Include="Ctrl\IfExecutor.cs" />
-    <Compile Include="Ctrl\ThenExecutor.cs" />
+    <Compile Include="Ctrl\ForEach\MessageCollection.cs" />
+    <Compile Include="Ctrl\IfThenElse\ConditionMessageProcessor.cs" />
+    <Compile Include="Ctrl\IfThenElse\ElseExecutor.cs" />
+    <Compile Include="Ctrl\IfThenElse\ElseIfExecutor.cs" />
+    <Compile Include="Ctrl\IfThenElse\IfExecutor.cs" />
+    <Compile Include="Ctrl\IfThenElse\ThenExecutor.cs" />
     <Compile Include="Db\DbCommonExtenstions.cs" />
     <Compile Include="Db\MsSql\DbMsSqlExtensions.cs" />
     <Compile Include="Db\MySql\DbMySqlExtensions.cs" />
@@ -75,7 +76,7 @@
     <Compile Include="Http\HttpRouteEqualityComparer.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Xml\XmlExtensions.cs" />
-    <Compile Include="Xml\XsltExtensions.cs" />
+    <Compile Include="Xml\Xslt\XsltExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

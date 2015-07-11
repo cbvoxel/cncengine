@@ -23,7 +23,7 @@ using System.Xml.XPath;
 using System.Xml.Xsl;
 using log4net;
 
-namespace CncEngine.Common.Xml
+namespace CncEngine.Common.Xml.Xslt
 {
     public static class XsltExtensions
     {

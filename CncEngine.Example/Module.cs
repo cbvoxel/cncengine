@@ -17,11 +17,17 @@
 
 using System;
 using System.Linq;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using CncEngine.Common;
 using CncEngine.Common.Db;
 using CncEngine.Common.Db.MsSql;
 using CncEngine.Common.Exceptions;
 using CncEngine.Common.Http;
+using CncEngine.Common.Log;
+using CncEngine.Common.Xml;
+using CncEngine.Common.Xml.Xslt;
+using CncEngine.Example.ItemAttributes;
 
 namespace CncEngine.Example
 {
@@ -38,11 +44,11 @@ namespace CncEngine.Example
             try
             {
                 var xml = Resources.LoadModuleResourceXml<Module>(@"PlentyConfig.xml");
-                Username = xml.Root.Descendants("Username").First().Value;
-                Password = xml.Root.Descendants("Password").First().Value;
-                Host = xml.Root.Descendants("Host").First().Value;
-                Port = Int32.Parse(xml.Root.Descendants("Port").First().Value);
-                Path = xml.Root.Descendants("Path").First().Value;
+                Username = xml.Descendants("Username").First().Value;
+                Password = xml.Descendants("Password").First().Value;
+                Host = xml.Descendants("Host").First().Value;
+                Port = Int32.Parse(xml.Descendants("Port").First().Value);
+                Path = xml.Descendants("Path").First().Value;
             }
             catch (Exception e)
             {
@@ -71,22 +77,41 @@ namespace CncEngine.Example
         public void Process(Message message)
         {
             message
-                .SetVariable("ContentType", "text/xml")
-                .LoadModuleResourceTextFile<Module>("PlentyConfig.xml")
+                .GetItemAttributes(_plentyConnector)
+                .ExtractVariable("//Attributes", "ItemAttributes", XmlExtensions.NodeType.Node)
+                .LoadModuleResourceXml<Module>("PlentyConfig.xml")
+                .ExtractVariable("//PlentyConfig", "PlentyConfig", XmlExtensions.NodeType.Node)
                 .ExtractHost("//LeoveServer1/Host")
                 .ExtractPort("//LeoveServer1/Port")
                 .ExtractUsername("//LeoveServer1/Username")
                 .ExtractPassword("//LeoveServer1/Password")
                 .ExtractDatabase("//LeoveServer1/Database")
-                .MsSqlSelect("SELECT TOP(10) * FROM TranslationTable [TT]; SELECT TOP(10) * FROM ActionReports [AR];")
-                //.SetPayload("<Root>Test</Root>")
+                .MsSqlSelect("SELECT DISTINCT TOP(1) Type FROM [CncEngine].[dbo].[TranslationTable] WHERE Type LIKE 'Size.%' ORDER BY Type")
+                .SplitMessages("//Type")
+                .ForEach(m => m
+                    .SetVariable("CurrentType", m.Payload.Value)
+                    .MsSqlSelect(String.Format("SELECT DISTINCT Term FROM [CncEngine].[dbo].[TranslationTable] WHERE Type = '{0}' ORDER BY Term", m.Payload.Value))
+                    .SplitMessages("//Term")
+                    .ForEach(mm => mm
+                        .VariableToPayload("CurrentType")
+                        .AddToPayload(mm.Variables["PlentyConfig"])
+                        .AddToPayload(mm.Variables["ItemAttributes"].XmlXPath("//item[BackendName='" + mm.Variables["CurrentType"] + "']").FirstOrDefault())
+                        .XslTransformFromModuleResource<Module>("ItemAttributes/Login2AddItemAttribute.xsl")
+                    )
+                    .Combine()
+                //.VariableToPayload("CurrentType")
+                //.Combine(mm => m.SetPayload(XElement.Parse(mm.Variables["PlentyConfig"].ToString())))
+                //.Combine(mm => m.SetPayload(mm.Variables["ItemAttributes"].ToString().ExtractXPath("//item[BackendName='" + mm.Variables["currentType"] + "']", XmlExtensions.NodeType.Node)))
+                )
+                .Combine()
+                .SetVariable("ContentType", "text/xml")
                 ;
         }
 
         public void ExceptionHandling(Exception ex, Message message)
         {
-            message.SetVariable("ExceptionPayload", message.Payload.ToString());
-            message.SetPayload(ex.ToString());
+            //message.SetVariable("ExceptionPayload", message.Payload.ToString());
+            message.SetPayload("<Exception></Exception>");
         }
     }
 }

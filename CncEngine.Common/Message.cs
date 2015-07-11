@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml;
+using System.Xml.Linq;
 using log4net;
 
 namespace CncEngine.Common
@@ -47,7 +47,14 @@ namespace CncEngine.Common
         public Message SetPayload(string newPayload)
         {
             Logger.Debug("Step");
-            Payload.PayloadAsString = newPayload;
+            try
+            {
+                Payload = new Payload(XElement.Parse(newPayload));
+            }
+            catch (Exception e)
+            {
+                Payload = new Payload {Value = newPayload};
+            }
             return this;
         }
 
@@ -56,15 +63,48 @@ namespace CncEngine.Common
             Logger.Debug("Step");
             using (var stream = new StreamReader(newPayload, Encoding.UTF8))
             {
-                Payload.PayloadAsString = stream.ReadToEnd();
+                return SetPayload(stream.ReadToEnd());
             }
+        }
+
+        public Message SetPayload(XElement element)
+        {
+            Logger.Debug("Step");
+            Payload = new Payload(element);
             return this;
+        }
+
+        public Message SetPayload(IEnumerable<XElement> elements)
+        {
+            Logger.Debug("Step");
+            Payload = new Payload();
+            foreach(var element in elements)
+                Payload.Add(element);
+            return this;
+        }
+
+        public Message SetPayload(Func<Message,XElement> element)
+        {
+            Logger.Debug("Step");
+            return SetPayload(element(this));
         }
 
         public Message SetPayload(Func<Message, String> setterFunc)
         {
             Logger.Debug("Step");
-            Payload.PayloadAsString = setterFunc(this);
+            return SetPayload(setterFunc(this));
+        }
+
+        public Message AddToPayload(XElement element)
+        {
+            if(element != null)
+                Payload.Add(element);
+            return this;
+        }
+
+        public Message AddToPayload(object element)
+        {
+            Payload.Add(XElement.Parse(element.ToString()));
             return this;
         }
 
@@ -81,12 +121,25 @@ namespace CncEngine.Common
             return this;
         }
 
+        public Message SetVariable(string variableName, Func<Message,object> variableValueFunc)
+        {
+            return SetVariable(variableName, variableValueFunc(this));
+        }
+
         public override string ToString()
         {
-            return String.Format("Variables:\r\n{1}\r\n\r\nMessage Paylod:\r\n{0}", 
+            return String.Format("Variables:\r\n{1}\r\n\r\nMessage Payload:\r\n{0}", 
                 Payload, 
                 String.Join("\r\n", Variables.Select(v => v.Key + "=" + (v.Value ?? "null").ToString()))
                 );
+        }
+
+        public Message Clone()
+        {
+            var msg = new Message();
+            Variables.ToList().ForEach(v => msg.Variables.Add(v));
+            msg.Payload = Payload.Clone();
+            return msg;
         }
     }
 }

@@ -20,6 +20,7 @@ using CncEngine.Common;
 using CncEngine.Common.Http;
 using CncEngine.Common.Log;
 using CncEngine.Common.Xml;
+using CncEngine.Common.Xml.Xslt;
 using log4net;
 
 namespace CncEngine.Example.GetToken
@@ -33,11 +34,11 @@ namespace CncEngine.Example.GetToken
             return message
                 .LoadTempToken()
                 .If(m => m.Variables.ContainsKey("Token")
-                         && !string.IsNullOrEmpty((string) m.Variables["Token"]))
+                         && !string.IsNullOrEmpty((string)m.Variables["Token"]))
                 .Then(Message.NoChange)
                 .Else(m =>
                     m
-                        .SetPayload(Resources.LoadModuleResourceTextFile<Module>(@"PlentyConfig.xml"))
+                        .SetPayload(Resources.LoadModuleResourceXml<Module>(@"PlentyConfig.xml"))
                         .ClearVariables()
                         .XslTransformFromModuleResource<Module>(@"GetToken/GetTokenTransform.xsl")
                         .SetVariable("HttpHeaderSoapAction", "GetAuthentificationToken")
@@ -48,7 +49,8 @@ namespace CncEngine.Example.GetToken
                         .ExtractVariable("//Token", "Token")
                         .SaveTempToken()
                 )
-                .EndIf();
+                .EndIf()
+                ;
         }
 
         public static Message LoadTempToken(this Message message)

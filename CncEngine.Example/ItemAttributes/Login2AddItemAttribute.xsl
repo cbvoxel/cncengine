@@ -7,10 +7,10 @@
 			<soapenv:Header>
 				<ver:verifyingToken>
 					<UserID>
-						<xsl:value-of select="//Login/UserID" />
+						<xsl:value-of select="//PlentyConfig/UserID" />
 					</UserID>
 					<Token>
-						<xsl:value-of select="//Login/Token" />
+						<xsl:value-of select="//PlentyConfig/Token" />
 					</Token>
 				</ver:verifyingToken>
 			</soapenv:Header>
@@ -20,46 +20,33 @@
 						xsi:type="ver:PlentySoapRequest_SetItemAttributes">
 						<Attributes xsi:type="ver:ArrayOfPlentysoapobject_setitemattribute">
 							<item xsi:type="ver:PlentySoapObject_SetItemAttribute">
-								<!-- <AmazonVariation>Integer</AmazonVariation> -->
 								<BackendName>
-									<xsl:value-of select="//Database/Type" />
+									<xsl:value-of select="//CurrentType" />
 								</BackendName>
 								<Contentpage></Contentpage>
 								<FrontendLang></FrontendLang>
 								<FrontendName></FrontendName>
-								<!-- <GoogleProductsVariation>Integer</GoogleProductsVariation> -->
 								<Id>
 									<xsl:value-of
-										select="//Attributes/item[BackendName=//Database/Type]/Id" />
+										select="//item/Id" />
 								</Id>
-								<!-- <ImageAttribute>Boolean</ImageAttribute> -->
-								<!-- <MarkupPercental>Double</MarkupPercental> -->
-								<!-- <NeckermannAttribute>Integer</NeckermannAttribute> -->
-								<!-- <OttoVariation>Integer</OttoVariation> -->
-								<!-- <PixmaniaAttribute>Integer</PixmaniaAttribute> -->
-								<!-- <Position>Integer</Position> -->
-								<!-- <ShopperellaVariation>Integer</ShopperellaVariation> -->
 								<Values xsi:type="ver:ArrayOfPlentysoapobject_setitemattributevalue">
-									<xsl:for-each select="/BuildRequestInput/Database/Terms/TermEntry/Term">
+									<xsl:for-each select="//Term">
 									<xsl:variable name="term" select="." />
 										<item xsi:type="ver:PlentySoapObject_SetItemAttributeValue">
 											<BackendName>
 												<xsl:value-of select="$term" />
 											</BackendName>
-											<!-- <Comment></Comment> -->
 											<FrontendName>
 												<xsl:value-of select="$term" />
 											</FrontendName>
-											<!-- <Markup></Markup> -->
-											<!-- <Position></Position> -->
 											<ValueId>
 												<xsl:value-of
-													select="/BuildRequestInput//Attributes/item[BackendName=/BuildRequestInput/Database/Type/text()]/Values/item[BackendName=$term]/ValueId/text()" />
+													select="//item/Values/item[BackendName=$term]/ValueId/text()" />
 											</ValueId>
 										</item>
 									</xsl:for-each>
 								</Values>
-								<!-- <CallItemsLimit>Integer</CallItemsLimit> -->
 							</item>
 						</Attributes>
 					</oPlentySoapRequest_SetItemAttributes>

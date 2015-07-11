@@ -12,10 +12,10 @@
           <oLogin xsi:type="ver:PlentySoapRequest_GetAuthentificationToken">
             <!--You may enter the following 2 items in any order-->
             <Username xsi:type="xsd:string">
-              <xsl:value-of select="//Username"/>
+              <xsl:value-of select="//PlentyConfig/Username"/>
             </Username>
             <Userpass xsi:type="xsd:string">
-              <xsl:value-of select="//Password"/>
+              <xsl:value-of select="//PlentyConfig/Password"/>
             </Userpass>
           </oLogin>
         </ver:GetAuthentificationToken>
