@@ -5,7 +5,7 @@ CncEngine
 This is a very small, lightweight enterprise integration and enterprise service bus (esb) framework based on .Net with a focus on using it on linux boxes so that Mono must be targetted.
 
 To Do:
-- Logging Repositories for different logging behavior
+- Logger Configuration
 - Dokumentation
 - Add Profile "Mono"
 - Test Mono (I must admit, I have never really worked with it)
